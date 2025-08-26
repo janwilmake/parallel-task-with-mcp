@@ -182,6 +182,12 @@ Unfortunately, this MCP is too slow for parallel, and the tool-call timed out af
 
 It'd be great if [Pitchbook](https://pitchbook.com) had their own remote MCP instead of relying on a paid MCP on [Apify](https://apify.com) since this makes it a lot slower, unfortuantely making this slightly unusable together with Parallel.ai. Maybe I can make my own Pitchbook Remote MCP based on some of their APIs in another guide! But for now, let's continue with this, and assume this problem will be solved later.
 
+To summarize, some learings:
+
+- You should know well what the MCP tools there are and what they require as input before you define your prompt! You need to ensure the web results or input prompt include that information, or the MCP might be used in the wrong way. Parallel Agent doesn't seem to hesitate to use it with obviously incorrect input, or even use a unrelated tool. This may also be due to bad MCP quality.
+- Source policy is useful if the MCP input require URLs
+- MCP tool calls time out after 30s, so ensure your used MCP is fast enough.
+
 # Using Typescript SDK
 
 Now let's use the Typescript SDK for this. To make it easier to use the SDK with LLMs I created [this context of the entire SDK public API](https://raw.githubusercontent.com/parallel-web/parallel-cookbook/refs/heads/main/typescript-sdk-types.d.ts), which totals around 10k tokens.
