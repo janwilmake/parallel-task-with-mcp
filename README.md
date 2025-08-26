@@ -204,7 +204,7 @@ To summarize, some learings:
 
 Now let's use the Typescript SDK for this. To make it easier to use the SDK with LLMs I created [this context of the entire SDK public API](https://raw.githubusercontent.com/parallel-web/parallel-cookbook/refs/heads/main/typescript-sdk-types.d.ts), which totals around 10k tokens.
 
-Now the context doesn't required doesn't include the OpenAPI specs anymore, but instead, the typescript SDK. There's currently no easy way to get a subset of the SDK surface area (for reducing context window), but this may be added to the SDK in the future. Here's what we can use to run a task over the API:
+Now the context doesn't required doesn't include the OpenAPI specs anymore, but instead, the typescript SDK. There's currently no easy way to get a subset of the SDK surface area (for reducing context window), but this may be added to the SDK in the future. Here's what we can use to run a task over the SDK:
 
 - https://docs.parallel.ai/features/mcp-tool-call.md
 - https://docs.parallel.ai/task-api/core-concepts/specify-a-task.md
