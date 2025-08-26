@@ -187,7 +187,7 @@ To summarize, some learings:
 - You should know well what the MCP tools there are and what they require as input before you define your prompt! You need to ensure the web results or input prompt include that information, or the MCP might be used in the wrong way. Parallel Agent doesn't seem to hesitate to use it with obviously incorrect input, or even use a unrelated tool. This may also be due to bad MCP quality.
 - Source policy is useful if the MCP input require URLs
 - MCP tool calls time out after 30s, so ensure your used MCP is fast enough.
-- I also tried the same curl with the "core" processor, but this consistently gave me the following error:
+- I also tried the same curl with the "core" processor, but this consistently gave me the following error (lite and base processors worked fine):
 
 ```
 {
