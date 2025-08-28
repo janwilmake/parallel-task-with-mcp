@@ -239,7 +239,7 @@ We'll build the following frontend:
 1. Collect User Data into Frontend Local Storage:
 
 - User should fill in their Parallel API key (obtainable at )
-- User should fill in their MCP access token (Since the Smithery MCP requires OAuth, obtainable by visiting https://mcp.p0web.com and performing the OAuth flow using the Smithery URL of the Supabase MCP: `https://server.smithery.ai/@supabase-community/supabase-mcp/mcp`)
+- User should fill in their MCP access token (Since the Smithery MCP requires OAuth, obtainable by visiting https://mcp.p0web.com and performing the OAuth flow using the Smithery URL of the Supabase MCP: `https://server.smithery.ai/@supabase-community/supabase-mcp/mcp`. Users should use the following Publishable API key from my dummy DB: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3emRxY2ZucGl0aGJhcnFhZGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyMzk4NjcsImV4cCI6MjA3MTgxNTg2N30.sibGiXhxF-1Y-0FOeB0u4unKmmtNUZOphONknjs8Xwk`)
 
 2. Select one of dummy company names to perform enrichment task
 
@@ -266,7 +266,7 @@ Here's what we can use to run a task over the SDK:
 
 # How to integrate?
 
-Go into the authorization problem a bit and refer to future guides.
+The authorization flow in our demo isn't great. We require an access token from Smithery so need to perform the oauth flow, and we didn't include that into this demo. [Are there better options?](https://x.com/janwilmake/status/1961073212961308931) How can we fix this?
 
 # TODO
 
