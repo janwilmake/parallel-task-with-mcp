@@ -1,4 +1,4 @@
-# Building a company enrichment agent using a Pitchbook MCP with the Parallel Tasks API
+# Building a company enrichment agent using the Parallel Tasks API with MCP tools
 
 Parallel Tasks allow [MCP tool calling](https://docs.parallel.ai/features/mcp-tool-call) as part of their Task API (now in Beta) which is very exciting! Besides the task using web data this allows you to use any private data. In this guide I'm going to show you how this works.
 
@@ -202,14 +202,18 @@ To summarize, some learings:
 
 # Using Typescript SDK
 
-Now let's use the Typescript SDK for this. To make it easier to use the SDK with LLMs I created [this context of the entire SDK public API](https://raw.githubusercontent.com/parallel-web/parallel-cookbook/refs/heads/main/typescript-sdk-types.d.ts), which totals around 10k tokens.
+Now let's use the Typescript SDK for this. To make it easier to use the SDK with LLMs I created [this context of the entire SDK public API](https://rules-httpsuithu-s10son0.letmeprompt.com/parallel-sdk.d.ts), which totals around 4.5k tokens.
 
-Now the context doesn't required doesn't include the OpenAPI specs anymore, but instead, the typescript SDK. There's currently no easy way to get a subset of the SDK surface area (for reducing context window), but this may be added to the SDK in the future. Here's what we can use to run a task over the SDK:
+Now the context doesn't required doesn't include the OpenAPI specs anymore, but instead, the typescript SDK. There's currently no easy way to get a subset of the SDK surface area (for reducing context window), but this may be added to the SDK in the future.
+
+Besides this, let's use streaming events to see intermediate updates and let's use the task group API instead of doing a single task. We can use this to nicely render a UI for the end-user.
+
+Here's what we can use to run a task over the SDK:
 
 - https://docs.parallel.ai/features/mcp-tool-call.md
 - https://docs.parallel.ai/task-api/core-concepts/specify-a-task.md
-- https://raw.githubusercontent.com/parallel-web/parallel-cookbook/refs/heads/main/typescript-sdk-types.d.ts
+- https://docs.parallel.ai/task-api/features/group-api.md
+- https://rules-httpsuithu-s10son0.letmeprompt.com/parallel-sdk.d.ts
+- https://docs.parallel.ai/task-api/features/task-sse.md
 
-Besides this, let's use streaming events to see intermediate updates. We can use this to nicely render a UI for the end-user.
-
-TBD, waiting for streaming in SDK
+I also found [this MCP server](https://smithery.ai/server/@supabase-community/supabase-mcp) which allows read-only or rw connections to any Supabase Postgres Database. [They're still on the stdio transport](https://github.com/supabase-community/supabase-mcp/issues/123) which is a bit risky for the sake of the demo, but this may be solved soon. Rather than going with Pitchbooks unofficial MCP, I'll use this one in the next exploration.
