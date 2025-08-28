@@ -1,6 +1,10 @@
 # Building a company enrichment agent using the Parallel Tasks API with MCP tools
 
-Parallel Tasks allow [MCP tool calling](https://docs.parallel.ai/features/mcp-tool-call) as part of their Task API (now in Beta) which is very exciting! Besides the task using web data this allows you to use any private data. In this guide I'm going to show you how this works.
+[MCP is the most exciting thing in software right now](https://x.com/kentcdodds/status/1960740174566138335). Parallel Tasks allow [MCP tool calling](https://docs.parallel.ai/features/mcp-tool-call) as part of their Task API (now in Beta) which is very exciting! Besides the task using web data this allows you to use any private data. In this guide I'm going to show you how this works.
+
+We'll explore how we could use a Database MCP to enrich your Company CRM with private data available in your datalake. [Discuss this usecase](https://x.com/janwilmake/status/1961056341444690052). We'll instruct to only use the web as a fallback in case the database doesn't have the info on the company.
+
+![](task-group-from-db-and-web.drawio.png)
 
 First, let's see what the AI needs to know to build something with Tasks with MCP tools; appending `.md` to the docs pages give me the context I need in markdown format:
 
@@ -200,20 +204,71 @@ To summarize, some learings:
 }
 ```
 
-# Using Typescript SDK
+# Choosing a Database MCP
+
+Since
+
+After [researching MCPs](https://x.com/janwilmake/status/1960649274569457805), I found [Supabase MCP on Smithery](https://smithery.ai/server/@supabase-community/supabase-mcp) which allows read-only or read+write connections to any Supabase Postgres Database. [They're still on the stdio transport](https://github.com/supabase-community/supabase-mcp/issues/123) which is a bit risky for the sake of the demo. I also found [The Disco.dev Supabase Server](https://disco.dev/integrations/supabase) which seems more risk-free. After trying both as [claude.ai connectors](https://claude.ai/settings/connectors), I found the smithery.ai MCP to be more user-friendly, since it allowed access to the right project immediately by specifying a project ID in the oauth flow. Also, the Smithery MCP didn't require me to pass an additional API key for doing queries in a database, while the Disco.dev one did.
+
+It was very straightforward to seed the database with some dummy data. All I needed to do is ask that in natural language:
+
+Some things I asked:
+
+```
+test each tool in the mcp
+```
+
+```
+can you seed some dummy data into this project? it should be a companies table with some fake details. im using this for a demo
+```
+
+```
+please use supabase mcp to add some additional niche information columns to the companies db and come up with some dummy data for the existing companies
+```
+
+```
+hey, can you see which tables there are and how many rows ?
+```
+
+[Result of that last one here](https://claude.ai/share/bcb37c6d-d466-470e-b419-68d7bbd49de6)
+
+# How the architecture will work
+
+We'll build the following frontend:
+
+1. Collect User Data into Frontend Local Storage:
+
+- User should fill in their Parallel API key (obtainable at )
+- User should fill in their MCP access token (Since the Smithery MCP requires OAuth, obtainable by visiting https://mcp.p0web.com and performing the OAuth flow using the Smithery URL of the Supabase MCP: `https://server.smithery.ai/@supabase-community/supabase-mcp/mcp`)
+
+2. Select one of dummy company names to perform enrichment task
+
+3. Optionally edit the task template which contains `{{name}}` before submitting the task
+
+4. See results of the task stream back, nicely rendered with confidence and reasoning; also see which MCPs were used.
+
+On the back-end, we'll just need an endpoint `/task?input=string&parallelApiKey=string&mcpAccessToken=string => ReadableStream | Error`
+
+# Using the Typescript SDK to bring it together
 
 Now let's use the Typescript SDK for this. To make it easier to use the SDK with LLMs I created [this context of the entire SDK public API](https://rules-httpsuithu-s10son0.letmeprompt.com/parallel-sdk.d.ts), which totals around 4.5k tokens.
 
 Now the context doesn't required doesn't include the OpenAPI specs anymore, but instead, the typescript SDK. There's currently no easy way to get a subset of the SDK surface area (for reducing context window), but this may be added to the SDK in the future.
 
-Besides this, let's use streaming events to see intermediate updates and let's use the task group API instead of doing a single task. We can use this to nicely render a UI for the end-user.
+Besides this, let's use streaming events to see intermediate updates. We can use this to nicely render a UI for the end-user.
 
 Here's what we can use to run a task over the SDK:
 
 - https://docs.parallel.ai/features/mcp-tool-call.md
 - https://docs.parallel.ai/task-api/core-concepts/specify-a-task.md
-- https://docs.parallel.ai/task-api/features/group-api.md
 - https://rules-httpsuithu-s10son0.letmeprompt.com/parallel-sdk.d.ts
 - https://docs.parallel.ai/task-api/features/task-sse.md
 
-I also found [this MCP server](https://smithery.ai/server/@supabase-community/supabase-mcp) which allows read-only or rw connections to any Supabase Postgres Database. [They're still on the stdio transport](https://github.com/supabase-community/supabase-mcp/issues/123) which is a bit risky for the sake of the demo, but this may be solved soon. Rather than going with Pitchbooks unofficial MCP, I'll use this one in the next exploration.
+# How to integrate?
+
+Go into the authorization problem a bit and refer to future guides.
+
+# TODO
+
+- https://mcp.p0web.com should make the access tokens for each MCP easily copyable.
+- Hold context against spec, building out simple solution.
